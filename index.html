@@ -216,8 +216,29 @@
   .badge-programada { background:rgba(88,166,255,0.12); color:var(--blue); border:1px solid rgba(88,166,255,0.25); }
   .badge-coletada   { background:rgba(63,185,80,0.12); color:var(--green); border:1px solid rgba(63,185,80,0.25); }
   .badge-reagendada { background:rgba(248,81,73,0.12); color:#f85149; border:1px solid rgba(248,81,73,0.25); }
+  .badge-cancelada  { background:rgba(130,130,130,0.12); color:#8b949e; border:1px solid rgba(130,130,130,0.25); }
   .badge-atrasado   { background:rgba(227,130,42,0.15); color:var(--orange); border:1px solid rgba(227,130,42,0.3); }
   .unidade-tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:600; font-family:var(--font-m); background:var(--red-subtle); color:var(--red-bright); border:1px solid rgba(155,32,32,0.25); }
+
+  /* ORDEM DE COLETA - IMPRESSÃO */
+  #ordem-impressao { display:none; }
+  @media print {
+    body > *:not(#ordem-impressao) { display: none !important; }
+    #ordem-impressao {
+      display: block !important; position: fixed; inset: 0;
+      background: white; color: #111; padding: 40px;
+      font-family: Arial, sans-serif; font-size: 13px; z-index: 99999;
+    }
+    #ordem-impressao h1 { font-size: 20px; margin-bottom: 4px; }
+    #ordem-impressao .oc-header { border-bottom: 2px solid #9B2020; padding-bottom: 12px; margin-bottom: 20px; }
+    #ordem-impressao .oc-empresa { font-size: 11px; color: #555; }
+    #ordem-impressao .oc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; margin-bottom: 20px; }
+    #ordem-impressao .oc-field label { font-size: 10px; text-transform: uppercase; color: #888; font-weight: bold; display: block; margin-bottom: 2px; }
+    #ordem-impressao .oc-field span { font-size: 13px; color: #111; font-weight: 600; }
+    #ordem-impressao .oc-full { grid-column: 1 / -1; }
+    #ordem-impressao .oc-footer { border-top: 1px solid #ddd; padding-top: 12px; font-size: 11px; color: #888; display: flex; justify-content: space-between; }
+    #ordem-impressao .oc-id { font-size: 11px; color: #9B2020; font-weight: bold; }
+  }
 
   /* EMPTY */
   .empty { text-align:center; padding:50px 20px; color:var(--muted); }
@@ -357,6 +378,7 @@
           <option value="Programada">Programada</option>
           <option value="Coletada">Coletada</option>
           <option value="Reagendada">Reagendada</option>
+          <option value="Cancelada">Cancelada</option>
         </select>
       </div>
       <div id="tabela-registro-wrap"><div class="loading"><div class="spinner"></div> Carregando...</div></div>
@@ -391,6 +413,7 @@
           <option value="Programada">Programada</option>
           <option value="Coletada">Coletada</option>
           <option value="Reagendada">Reagendada</option>
+          <option value="Cancelada">Cancelada</option>
         </select>
         <select class="filter-sel" id="filtro-unidade-painel" onchange="renderTabelaPainel()">
           <option value="">Todas as unidades</option>
@@ -419,6 +442,7 @@
           <option value="Programada">🔵 Programada</option>
           <option value="Coletada">🟢 Coletada</option>
           <option value="Reagendada">🔴 Reagendada</option>
+          <option value="Cancelada">⛔ Cancelada</option>
         </select>
       </div>
       <div class="field"><label>🏢 Unidade Responsável</label>
@@ -440,6 +464,19 @@
       <button class="btn btn-outline" onclick="fecharModal()">Cancelar</button>
       <button class="btn btn-primary" onclick="salvarEdicao()">💾 Salvar Alteração</button>
     </div>
+  </div>
+</div>
+
+<!-- ORDEM DE COLETA IMPRESSÃO -->
+<div id="ordem-impressao">
+  <div class="oc-header">
+    <h1>Ordem de Coleta</h1>
+    <div class="oc-empresa">Estrela do Vale Transportes</div>
+  </div>
+  <div class="oc-grid" id="oc-conteudo"></div>
+  <div class="oc-footer">
+    <span id="oc-id-rodape"></span>
+    <span id="oc-data-impressao"></span>
   </div>
 </div>
 
@@ -494,8 +531,8 @@ function toast(msg, tipo) {
 }
 
 function badgeStatus(s) {
-  const cls = { Pendente:'badge-pendente', Programada:'badge-programada', Coletada:'badge-coletada', Reagendada:'badge-reagendada' };
-  const ico = { Pendente:'🟡', Programada:'🔵', Coletada:'🟢', Reagendada:'🔴' };
+  const cls = { Pendente:'badge-pendente', Programada:'badge-programada', Coletada:'badge-coletada', Reagendada:'badge-reagendada', Cancelada:'badge-cancelada' };
+  const ico = { Pendente:'🟡', Programada:'🔵', Coletada:'🟢', Reagendada:'🔴', Cancelada:'⛔' };
   return '<span class="badge ' + (cls[s]||'') + '">' + (ico[s]||'') + ' ' + s + '</span>';
 }
 function parseData(str) {
@@ -627,11 +664,19 @@ function renderAtrasadosPainel() {
   wrap.innerHTML = html;
 }
 
+function isOculto(c) {
+  if (c.status !== 'Coletada' && c.status !== 'Cancelada') return false;
+  var dt = parseData(c.atualizado || c.data);
+  if (!dt) return false;
+  return (Date.now() - dt.getTime()) / 3600000 >= 24;
+}
+
 function renderTabelaPainel() {
   const busca  = (document.getElementById('busca-painel').value||'').toLowerCase();
   const stFilt = document.getElementById('filtro-status-painel').value;
   const unFilt = document.getElementById('filtro-unidade-painel').value;
   const lista  = coletas.filter(function(c) {
+    if (!stFilt && isOculto(c)) return false;
     const txt = [c.cliente,c.cidade,c.id,c.analista,c.unidade,c.endereco,c.docNum].join(' ').toLowerCase();
     return (!busca||txt.includes(busca)) && (!stFilt||c.status===stFilt) && (!unFilt||c.unidade===unFilt);
   });
@@ -658,7 +703,7 @@ function renderTabelaPainel() {
     html += '<td><span class="unidade-tag">' + c.unidade.split('—')[0].trim() + '</span></td>';
     html += '<td style="font-size:11px;color:var(--muted);">' + c.analista + '</td>';
     html += '<td style="font-size:11px;color:var(--muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + c.obs + '">' + (c.obs||'—') + '</td>';
-    html += '<td style="white-space:nowrap;display:flex;gap:5px;">' + btnAvanco + '<button class="btn btn-outline btn-sm" onclick="abrirModal(' + c.rowIndex + ')">✏️</button></td></tr>';
+    html += '<td style="white-space:nowrap;display:flex;gap:5px;">' + btnAvanco + '<button class="btn btn-outline btn-sm" onclick="imprimirOrdem(' + c.rowIndex + ')" title="Imprimir Ordem">🖨️</button><button class="btn btn-outline btn-sm" onclick="abrirModal(' + c.rowIndex + ')">✏️</button></td></tr>';
   });
   html += '</tbody></table>';
   wrap.innerHTML = html;
@@ -745,6 +790,31 @@ async function avancarStatus(rowIndex) {
     toast('Status avançado para ' + novoStatus + '!');
     setTimeout(carregarColetas, 2000);
   } catch(e) { toast('Erro: ' + e.message, 'error'); }
+}
+
+function imprimirOrdem(rowIndex) {
+  const c = coletas.find(function(x) { return x.rowIndex === rowIndex; });
+  if (!c) return;
+  function campo(label, valor, full) {
+    return '<div class="oc-field' + (full?' oc-full':'') + '"><label>' + label + '</label><span>' + (valor||'—') + '</span></div>';
+  }
+  document.getElementById('oc-conteudo').innerHTML =
+    campo('Nº da Ordem', c.id) +
+    campo('Data do Registro', c.data) +
+    campo('Cliente / Solicitante', c.cliente) +
+    campo('Cidade', c.cidade) +
+    campo('Endereço de Coleta', c.endereco, true) +
+    campo('Volumes', c.volumes) +
+    campo('Peso Estimado', c.peso ? c.peso + ' kg' : '—') +
+    campo('Status', c.status) +
+    campo('Placa do Veículo', c.placa) +
+    campo('Unidade Responsável', c.unidade, true) +
+    campo('Analista Responsável', c.analista) +
+    campo('Nº Documento (NF/CT-e)', c.docNum) +
+    (c.obs ? campo('Observações', c.obs, true) : '');
+  document.getElementById('oc-id-rodape').textContent = 'Ordem: ' + c.id;
+  document.getElementById('oc-data-impressao').textContent = 'Impresso em: ' + new Date().toLocaleString('pt-BR');
+  window.print();
 }
 
 function exportarCSV() {
