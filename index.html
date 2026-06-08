@@ -703,7 +703,10 @@ function renderTabelaPainel() {
     html += '<td><span class="unidade-tag">' + c.unidade.split('—')[0].trim() + '</span></td>';
     html += '<td style="font-size:11px;color:var(--muted);">' + c.analista + '</td>';
     html += '<td style="font-size:11px;color:var(--muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + c.obs + '">' + (c.obs||'—') + '</td>';
-    html += '<td style="white-space:nowrap;display:flex;gap:5px;">' + btnAvanco + '<button class="btn btn-outline btn-sm" onclick="imprimirOrdem(' + c.rowIndex + ')" title="Imprimir Ordem">🖨️</button><button class="btn btn-outline btn-sm" onclick="abrirModal(' + c.rowIndex + ')">✏️</button></td></tr>';
+    const btnImprimir = c.status === 'Programada'
+      ? '<button class="btn btn-outline btn-sm" onclick="imprimirOrdem(' + c.rowIndex + ')" title="Imprimir Ordem de Coleta" style="color:var(--blue);border-color:rgba(88,166,255,0.4);">🖨️</button>'
+      : '';
+    html += '<td style="white-space:nowrap;display:flex;gap:5px;">' + btnAvanco + btnImprimir + '<button class="btn btn-outline btn-sm" onclick="abrirModal(' + c.rowIndex + ')">✏️</button></td></tr>';
   });
   html += '</tbody></table>';
   wrap.innerHTML = html;
