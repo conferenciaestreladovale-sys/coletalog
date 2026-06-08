@@ -706,7 +706,7 @@ function renderTabelaPainel() {
     const btnImprimir = c.status === 'Programada'
       ? '<button class="btn btn-outline btn-sm" onclick="imprimirOrdem(' + c.rowIndex + ')" title="Imprimir Ordem de Coleta" style="color:var(--blue);border-color:rgba(88,166,255,0.4);">🖨️</button>'
       : '';
-    html += '<td style="white-space:nowrap;display:flex;gap:5px;">' + btnAvanco + btnImprimir + '<button class="btn btn-outline btn-sm" onclick="abrirModal(' + c.rowIndex + ')">✏️</button></td></tr>';
+    html += '<td style="min-width:160px;"><div style="display:flex;flex-wrap:wrap;gap:5px;">' + btnAvanco + btnImprimir + '<button class="btn btn-outline btn-sm" onclick="abrirModal(' + c.rowIndex + ')">✏️</button></div></td></tr>';
   });
   html += '</tbody></table>';
   wrap.innerHTML = html;
