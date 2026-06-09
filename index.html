@@ -683,12 +683,12 @@ function renderTabelaPainel() {
   document.getElementById('count-painel').textContent = lista.length + ' registro' + (lista.length!==1?'s':'');
   const wrap = document.getElementById('tabela-painel-wrap');
   if (!lista.length) { wrap.innerHTML = '<div class="empty"><div class="empty-icon">📊</div><div>Nenhuma coleta encontrada.</div></div>'; return; }
-  var html = '<table><thead><tr><th>ID</th><th>Data</th><th>Cliente</th><th>Cidade</th><th>Vol.</th><th>Peso</th><th>Status</th><th>Placa</th><th>Doc.</th><th>Unidade</th><th>Analista</th><th>Obs.</th><th>Ações</th></tr></thead><tbody>';
+  var html = '<table><thead><tr><th>ID</th><th>Data</th><th>Cliente</th><th>Cidade</th><th>Vol.</th><th>Peso</th><th>Status</th><th>Placa</th><th>Doc.</th><th>Unidade</th><th>Analista</th><th>Obs.</th><th style="min-width:180px;">Ações</th></tr></thead><tbody>';
   lista.forEach(function(c) {
     const atr = isAtrasado(c);
     const proximoStatus = { 'Pendente': 'Programada', 'Programada': 'Coletada' };
     const btnLabels = { 'Pendente': '→ Programar', 'Programada': '→ Coletada' };
-    const btnColors = { 'Pendente': 'color:var(--blue);border-color:rgba(88,166,255,0.4);', 'Programada': 'color:var(--green);border-color:rgba(63,185,80,0.4);' };
+    const btnColors = { 'Pendente': 'color:var(--blue);border-color:rgba(88,166,255,0.4);white-space:nowrap;', 'Programada': 'color:var(--green);border-color:rgba(63,185,80,0.4);white-space:nowrap;' };
     const btnAvanco = proximoStatus[c.status]
       ? '<button class="btn btn-outline btn-sm" style="' + btnColors[c.status] + '" onclick="avancarStatus(' + c.rowIndex + ')">' + btnLabels[c.status] + '</button>'
       : '';
@@ -706,7 +706,7 @@ function renderTabelaPainel() {
     const btnImprimir = c.status === 'Programada'
       ? '<button class="btn btn-outline btn-sm" onclick="imprimirOrdem(' + c.rowIndex + ')" title="Imprimir Ordem de Coleta" style="color:var(--blue);border-color:rgba(88,166,255,0.4);">🖨️</button>'
       : '';
-    html += '<td style="min-width:160px;"><div style="display:flex;flex-wrap:wrap;gap:5px;">' + btnAvanco + btnImprimir + '<button class="btn btn-outline btn-sm" onclick="abrirModal(' + c.rowIndex + ')">✏️</button></div></td></tr>';
+    html += '<td style="min-width:180px;"><div style="display:flex;flex-wrap:wrap;gap:4px;align-items:center;">' + btnAvanco + btnImprimir + '<button class="btn btn-outline btn-sm" onclick="abrirModal(' + c.rowIndex + ')">✏️</button></div></td></tr>';
   });
   html += '</tbody></table>';
   wrap.innerHTML = html;
