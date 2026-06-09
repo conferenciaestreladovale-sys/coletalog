@@ -333,6 +333,7 @@
       <div class="card-body">
         <div class="form-grid">
           <div class="field"><label>Cliente / Solicitante</label><input type="text" id="f-cliente" placeholder="Nome do cliente"/></div>
+          <div class="field"><label>Remetente</label><input type="text" id="f-remetente" placeholder="Quem vai entregar a carga"/></div>
           <div class="field span2"><label>Endereço de Coleta</label><input type="text" id="f-endereco" placeholder="Rua, número, bairro"/></div>
           <div class="field"><label>Cidade</label><input type="text" id="f-cidade" placeholder="Cidade"/></div>
           <div class="field"><label>Volumes</label><input type="number" id="f-volumes" placeholder="Qtd de volumes" min="0"/></div>
@@ -435,6 +436,7 @@
     <input type="hidden" id="edit-row"/>
     <div class="form-grid">
       <div class="field"><label>Cliente</label><input type="text" id="edit-cliente"/></div>
+      <div class="field"><label>Remetente</label><input type="text" id="edit-remetente" placeholder="Quem vai entregar a carga"/></div>
       <div class="field"><label>Cidade</label><input type="text" id="edit-cidade"/></div>
       <div class="field"><label>Status</label>
         <select id="edit-status">
@@ -469,10 +471,7 @@
 
 <!-- ORDEM DE COLETA IMPRESSÃO -->
 <div id="ordem-impressao">
-  <div class="oc-header">
-    <h1>Ordem de Coleta</h1>
-    <div class="oc-empresa">Estrela do Vale Transportes</div>
-  </div>
+  <div id="oc-header-wrap"></div>
   <div class="oc-grid" id="oc-conteudo"></div>
   <div class="oc-footer">
     <span id="oc-id-rodape"></span>
@@ -570,7 +569,7 @@ async function carregarColetas() {
       rowIndex:i+2, id:r[0]||'', data:r[1]||'', cliente:r[2]||'', endereco:r[3]||'',
       cidade:r[4]||'', volumes:r[5]||'', peso:r[6]||'', status:r[7]||'',
       unidade:r[8]||'', obs:r[9]||'', analista:r[10]||'', atualizado:r[11]||'',
-      docNum:r[12]||'', docLink:r[13]||'', placa:r[14]||''
+      docNum:r[12]||'', docLink:r[13]||'', placa:r[14]||'', remetente:r[15]||''
     }; });
     document.getElementById('sync-msg').textContent = '↻ ' + new Date().toLocaleTimeString('pt-BR');
     if (tabAtual === 'registro') { renderTabelaRegistro(); atualizarBannerAtrasados(); }
@@ -591,7 +590,8 @@ async function salvarColeta() {
     document.getElementById('f-volumes').value, document.getElementById('f-peso').value,
     document.getElementById('f-status').value, document.getElementById('f-unidade').value,
     document.getElementById('f-obs').value.trim(), usuario.nome, dt,
-    document.getElementById('f-doc-num').value.trim(), document.getElementById('f-doc-link').value.trim()];
+    document.getElementById('f-doc-num').value.trim(), document.getElementById('f-doc-link').value.trim(),
+    '', document.getElementById('f-remetente').value.trim()];
   try {
     await fetch(APPS_SCRIPT, { method:'POST', mode:'no-cors',
       headers:{'Content-Type':'text/plain'},
@@ -602,7 +602,7 @@ async function salvarColeta() {
 }
 
 function limparForm() {
-  ['f-cliente','f-endereco','f-cidade','f-volumes','f-peso','f-obs','f-doc-num','f-doc-link'].forEach(function(id) { document.getElementById(id).value = ''; });
+  ['f-cliente','f-remetente','f-endereco','f-cidade','f-volumes','f-peso','f-obs','f-doc-num','f-doc-link'].forEach(function(id) { document.getElementById(id).value = ''; });
   document.getElementById('f-status').value = 'Pendente';
   if (usuario) document.getElementById('f-unidade').value = usuario.unidade;
 }
@@ -717,6 +717,7 @@ function abrirModal(rowIndex) {
   if (!c) return;
   document.getElementById('edit-row').value      = rowIndex;
   document.getElementById('edit-cliente').value  = c.cliente;
+  document.getElementById('edit-remetente').value = c.remetente;
   document.getElementById('edit-cidade').value   = c.cidade;
   document.getElementById('edit-status').value   = c.status;
   document.getElementById('edit-unidade').value  = c.unidade;
@@ -758,7 +759,7 @@ async function salvarEdicao() {
     document.getElementById('edit-volumes').value, c.peso, document.getElementById('edit-status').value,
     document.getElementById('edit-unidade').value, document.getElementById('edit-obs').value, c.analista, agora,
     document.getElementById('edit-doc-num').value, document.getElementById('edit-doc-link').value,
-    document.getElementById('edit-placa').value.toUpperCase()];
+    document.getElementById('edit-placa').value.toUpperCase(), document.getElementById('edit-remetente').value];
   try {
     await fetch(APPS_SCRIPT, { method:'POST', mode:'no-cors',
       headers:{'Content-Type':'text/plain'},
@@ -785,7 +786,7 @@ async function avancarStatus(rowIndex) {
 
   const agora = new Date().toLocaleString('pt-BR');
   const valores = [c.id, c.data, c.cliente, c.endereco, c.cidade, c.volumes, c.peso,
-    novoStatus, c.unidade, c.obs, c.analista, agora, c.docNum, c.docLink, placa];
+    novoStatus, c.unidade, c.obs, c.analista, agora, c.docNum, c.docLink, placa, c.remetente];
   try {
     await fetch(APPS_SCRIPT, { method:'POST', mode:'no-cors',
       headers:{'Content-Type':'text/plain'},
@@ -798,13 +799,19 @@ async function avancarStatus(rowIndex) {
 function imprimirOrdem(rowIndex) {
   const c = coletas.find(function(x) { return x.rowIndex === rowIndex; });
   if (!c) return;
+  const logoSrc = document.querySelector('.logo-img') ? document.querySelector('.logo-img').src : '';
   function campo(label, valor, full) {
     return '<div class="oc-field' + (full?' oc-full':'') + '"><label>' + label + '</label><span>' + (valor||'—') + '</span></div>';
   }
+  var headerHtml = '<div class="oc-header">';
+  if (logoSrc) headerHtml += '<img src="' + logoSrc + '" style="height:60px;width:auto;object-fit:contain;margin-bottom:8px;" />';
+  headerHtml += '<h1>Ordem de Coleta</h1><div class="oc-empresa">Estrela do Vale Transportes</div></div>';
+  document.getElementById('oc-header-wrap').innerHTML = headerHtml;
   document.getElementById('oc-conteudo').innerHTML =
     campo('Nº da Ordem', c.id) +
     campo('Data do Registro', c.data) +
     campo('Cliente / Solicitante', c.cliente) +
+    campo('Remetente', c.remetente) +
     campo('Cidade', c.cidade) +
     campo('Endereço de Coleta', c.endereco, true) +
     campo('Volumes', c.volumes) +
@@ -822,8 +829,8 @@ function imprimirOrdem(rowIndex) {
 
 function exportarCSV() {
   if (!coletas.length) return toast('Nenhuma coleta para exportar.', 'warn');
-  const header = ['ID','Data','Cliente','Endereço','Cidade','Volumes','Peso(kg)','Status','Unidade','Observações','Analista','Atualizado','Nº Documento','Link Documento','Placa'];
-  const rows = coletas.map(function(c) { return [c.id,c.data,c.cliente,c.endereco,c.cidade,c.volumes,c.peso,c.status,c.unidade,'"'+(c.obs||'').replace(/"/g,'""')+'"',c.analista,c.atualizado,c.docNum,c.docLink,c.placa]; });
+  const header = ['ID','Data','Cliente','Endereço','Cidade','Volumes','Peso(kg)','Status','Unidade','Observações','Analista','Atualizado','Nº Documento','Link Documento','Placa','Remetente'];
+  const rows = coletas.map(function(c) { return [c.id,c.data,c.cliente,c.endereco,c.cidade,c.volumes,c.peso,c.status,c.unidade,'"'+(c.obs||'').replace(/"/g,'""')+'"',c.analista,c.atualizado,c.docNum,c.docLink,c.placa,c.remetente]; });
   const csv = [header].concat(rows).map(function(r) { return r.join(';'); }).join('\n');
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'}));
