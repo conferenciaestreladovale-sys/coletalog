@@ -216,6 +216,13 @@
   .badge-programada { background:rgba(88,166,255,0.12); color:var(--blue); border:1px solid rgba(88,166,255,0.25); }
   .badge-coletada   { background:rgba(63,185,80,0.12); color:var(--green); border:1px solid rgba(63,185,80,0.25); }
   .badge-reagendada { background:rgba(248,81,73,0.12); color:#f85149; border:1px solid rgba(248,81,73,0.25); }
+  .multi-select-wrap { position:relative; }
+  .multi-sel-btn { cursor:pointer; min-width:160px; text-align:left; }
+  .multi-sel-dropdown { position:absolute; top:calc(100% + 4px); left:0; z-index:200; background:var(--card); border:1px solid var(--border); border-radius:8px; padding:8px 4px; min-width:180px; box-shadow:0 8px 24px rgba(0,0,0,0.4); }
+  .multi-sel-dropdown label { display:flex; align-items:center; gap:8px; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:13px; color:var(--text); transition:background 0.15s; }
+  .multi-sel-dropdown label:hover { background:var(--hover); }
+  .multi-sel-dropdown input[type=checkbox] { accent-color:var(--red-bright); width:14px; height:14px; cursor:pointer; }
+
   .badge-cancelada  { background:rgba(130,130,130,0.12); color:#8b949e; border:1px solid rgba(130,130,130,0.25); }
   .badge-atrasado   { background:rgba(227,130,42,0.15); color:var(--orange); border:1px solid rgba(227,130,42,0.3); }
   .unidade-tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:600; font-family:var(--font-m); background:var(--red-subtle); color:var(--red-bright); border:1px solid rgba(155,32,32,0.25); }
@@ -332,8 +339,8 @@
       </div>
       <div class="card-body">
         <div class="form-grid">
-          <div class="field"><label>Cliente / Solicitante</label><input type="text" id="f-cliente" placeholder="Nome do cliente"/></div>
-          <div class="field"><label>Remetente</label><input type="text" id="f-remetente" placeholder="Quem vai entregar a carga"/></div>
+          <div class="field"><label>Cliente / Solicitante</label><input type="text" id="f-cliente" placeholder="Empresa contratante (Solicitante do frete)"/></div>
+          <div class="field"><label>Remetente</label><input type="text" id="f-remetente" placeholder="Empresa de origem (Local da coleta)"/></div>
           <div class="field span2"><label>Endereço de Coleta</label><input type="text" id="f-endereco" placeholder="Rua, número, bairro"/></div>
           <div class="field"><label>Cidade</label><input type="text" id="f-cidade" placeholder="Cidade"/></div>
           <div class="field"><label>Volumes</label><input type="number" id="f-volumes" placeholder="Qtd de volumes" min="0"/></div>
@@ -382,7 +389,7 @@
           <option value="Cancelada">Cancelada</option>
         </select>
       </div>
-      <div id="tabela-registro-wrap" style="overflow-x:auto;"><div class="loading"><div class="spinner"></div> Carregando...</div></div>
+      <div id="tabela-registro-wrap"><div class="loading"><div class="spinner"></div> Carregando...</div></div>
     </div>
   </div>
 
@@ -408,14 +415,16 @@
       </div>
       <div class="table-toolbar">
         <div class="search-wrap"><span style="color:var(--muted)">🔍</span><input type="text" id="busca-painel" placeholder="Cliente, cidade, NF, ID..." oninput="renderTabelaPainel()"/></div>
-        <select class="filter-sel" id="filtro-status-painel" onchange="renderTabelaPainel()">
-          <option value="">Todos os status</option>
-          <option value="Pendente">Pendente</option>
-          <option value="Programada">Programada</option>
-          <option value="Coletada">Coletada</option>
-          <option value="Reagendada">Reagendada</option>
-          <option value="Cancelada">Cancelada</option>
-        </select>
+        <div class="multi-select-wrap" id="status-filter-wrap">
+          <button class="filter-sel multi-sel-btn" onclick="toggleStatusDropdown(event)" id="status-filter-btn">Todos os status ▾</button>
+          <div class="multi-sel-dropdown hidden" id="status-dropdown">
+            <label><input type="checkbox" value="Pendente" onchange="renderTabelaPainel()"> 🟡 Pendente</label>
+            <label><input type="checkbox" value="Programada" onchange="renderTabelaPainel()"> 🔵 Programada</label>
+            <label><input type="checkbox" value="Coletada" onchange="renderTabelaPainel()"> 🟢 Coletada</label>
+            <label><input type="checkbox" value="Reagendada" onchange="renderTabelaPainel()"> 🔴 Reagendada</label>
+            <label><input type="checkbox" value="Cancelada" onchange="renderTabelaPainel()"> ⛔ Cancelada</label>
+          </div>
+        </div>
         <select class="filter-sel" id="filtro-unidade-painel" onchange="renderTabelaPainel()">
           <option value="">Todas as unidades</option>
           <option value="Matriz - São José dos Campos">Matriz SJC</option>
@@ -424,7 +433,7 @@
         </select>
         <button class="btn btn-outline btn-sm" onclick="exportarCSV()">⬇️ Exportar CSV</button>
       </div>
-      <div id="tabela-painel-wrap" style="overflow-x:auto;"><div class="loading"><div class="spinner"></div> Carregando...</div></div>
+      <div id="tabela-painel-wrap"><div class="loading"><div class="spinner"></div> Carregando...</div></div>
     </div>
   </div>
 </div>
@@ -436,7 +445,7 @@
     <input type="hidden" id="edit-row"/>
     <div class="form-grid">
       <div class="field"><label>Cliente</label><input type="text" id="edit-cliente"/></div>
-      <div class="field"><label>Remetente</label><input type="text" id="edit-remetente" placeholder="Quem vai entregar a carga"/></div>
+      <div class="field"><label>Remetente</label><input type="text" id="edit-remetente" placeholder="Empresa de origem (Local da coleta)"/></div>
       <div class="field"><label>Cidade</label><input type="text" id="edit-cidade"/></div>
       <div class="field"><label>Status</label>
         <select id="edit-status">
@@ -616,16 +625,19 @@ function atualizarBannerAtrasados() {
 
 function renderTabelaRegistro() {
   const filtro = document.getElementById('filtro-status-reg').value;
-  const lista  = coletas.filter(function(c) { return !filtro || c.status === filtro; });
+  const lista  = coletas.filter(function(c) {
+    if (!filtro && isOculto(c)) return false;
+    return !filtro || c.status === filtro;
+  });
   const wrap   = document.getElementById('tabela-registro-wrap');
   if (!lista.length) { wrap.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><div>Nenhuma coleta encontrada.</div></div>'; return; }
-  var html = '<table><thead><tr><th>ID</th><th>Data</th><th>Cliente</th><th>Cidade</th><th>Vol.</th><th>Status</th><th>Documento</th><th>Unidade</th><th>Ações</th></tr></thead><tbody>';
+  var html = '<table><thead><tr><th>ID</th><th>Data</th><th>Remetente</th><th>Cidade</th><th>Vol.</th><th>Status</th><th>Documento</th><th>Unidade</th><th>Ações</th></tr></thead><tbody>';
   lista.forEach(function(c) {
     const atr = isAtrasado(c);
     html += '<tr class="' + (atr?'atrasado':'') + '">';
     html += '<td style="color:var(--muted);font-family:var(--font-m);font-size:11px;">' + c.id + '</td>';
     html += '<td style="color:var(--muted);font-size:11px;white-space:nowrap;">' + c.data + '</td>';
-    html += '<td style="font-weight:600;">' + c.cliente + (atr?' <span class="badge badge-atrasado">⚠️ +'+horasAtraso(c)+'h</span>':'') + '</td>';
+    html += '<td style="font-weight:600;">' + (c.remetente||c.cliente||'—') + (atr?' <span class="badge badge-atrasado">⚠️ +'+horasAtraso(c)+'h</span>':'') + '</td>';
     html += '<td>' + c.cidade + '</td>';
     html += '<td style="text-align:center;">' + (c.volumes||'—') + '</td>';
     html += '<td>' + badgeStatus(c.status) + '</td>';
@@ -668,22 +680,41 @@ function isOculto(c) {
   if (c.status !== 'Coletada' && c.status !== 'Cancelada') return false;
   var dt = parseData(c.atualizado || c.data);
   if (!dt) return false;
-  return (Date.now() - dt.getTime()) / 3600000 >= 24;
+  return (Date.now() - dt.getTime()) / 3600000 >= 12;
 }
 
+function getStatusFiltros() {
+  const boxes = document.querySelectorAll('#status-dropdown input[type=checkbox]:checked');
+  return Array.from(boxes).map(function(b) { return b.value; });
+}
+
+function toggleStatusDropdown(e) {
+  e.stopPropagation();
+  document.getElementById('status-dropdown').classList.toggle('hidden');
+}
+
+document.addEventListener('click', function(e) {
+  const wrap = document.getElementById('status-filter-wrap');
+  if (wrap && !wrap.contains(e.target)) {
+    document.getElementById('status-dropdown').classList.add('hidden');
+  }
+});
+
 function renderTabelaPainel() {
-  const busca  = (document.getElementById('busca-painel').value||'').toLowerCase();
-  const stFilt = document.getElementById('filtro-status-painel').value;
-  const unFilt = document.getElementById('filtro-unidade-painel').value;
-  const lista  = coletas.filter(function(c) {
-    if (!stFilt && isOculto(c)) return false;
-    const txt = [c.cliente,c.cidade,c.id,c.analista,c.unidade,c.endereco,c.docNum].join(' ').toLowerCase();
-    return (!busca||txt.includes(busca)) && (!stFilt||c.status===stFilt) && (!unFilt||c.unidade===unFilt);
+  const busca     = (document.getElementById('busca-painel').value||'').toLowerCase();
+  const stFiltros = getStatusFiltros();
+  const unFilt    = document.getElementById('filtro-unidade-painel').value;
+  const btn = document.getElementById('status-filter-btn');
+  if (btn) btn.textContent = stFiltros.length === 0 ? 'Todos os status ▾' : stFiltros.join(', ') + ' ▾';
+  const lista = coletas.filter(function(c) {
+    if (stFiltros.length === 0 && isOculto(c)) return false;
+    const txt = [c.cliente,c.remetente,c.cidade,c.id,c.analista,c.unidade,c.endereco,c.docNum].join(' ').toLowerCase();
+    return (!busca||txt.includes(busca)) && (stFiltros.length===0||stFiltros.includes(c.status)) && (!unFilt||c.unidade===unFilt);
   });
   document.getElementById('count-painel').textContent = lista.length + ' registro' + (lista.length!==1?'s':'');
   const wrap = document.getElementById('tabela-painel-wrap');
   if (!lista.length) { wrap.innerHTML = '<div class="empty"><div class="empty-icon">📊</div><div>Nenhuma coleta encontrada.</div></div>'; return; }
-  var html = '<table><thead><tr><th>ID</th><th>Data</th><th>Cliente</th><th>Cidade</th><th>Vol.</th><th>Peso</th><th>Status</th><th>Placa</th><th>Doc.</th><th>Unidade</th><th>Analista</th><th>Obs.</th><th style="min-width:180px;">Ações</th></tr></thead><tbody>';
+  var html = '<table><thead><tr><th>ID</th><th>Data</th><th>Remetente</th><th>Cidade</th><th>Vol.</th><th>Peso</th><th>Status</th><th>Placa</th><th>Doc.</th><th>Unidade</th><th>Analista</th><th>Obs.</th><th style="min-width:180px;">Ações</th></tr></thead><tbody>';
   lista.forEach(function(c) {
     const atr = isAtrasado(c);
     const proximoStatus = { 'Pendente': 'Programada', 'Programada': 'Coletada' };
@@ -692,10 +723,13 @@ function renderTabelaPainel() {
     const btnAvanco = proximoStatus[c.status]
       ? '<button class="btn btn-outline btn-sm" style="' + btnColors[c.status] + '" onclick="avancarStatus(' + c.rowIndex + ')">' + btnLabels[c.status] + '</button>'
       : '';
+    const btnImprimir = c.status === 'Programada'
+      ? '<button class="btn btn-outline btn-sm" onclick="imprimirOrdem(' + c.rowIndex + ')" title="Imprimir Ordem de Coleta" style="color:var(--blue);border-color:rgba(88,166,255,0.4);">🖨️</button>'
+      : '';
     html += '<tr class="' + (atr?'atrasado':'') + '">';
     html += '<td style="font-family:var(--font-m);font-size:11px;color:var(--muted);">' + c.id + '</td>';
     html += '<td style="font-size:11px;color:var(--muted);white-space:nowrap;">' + c.data + '</td>';
-    html += '<td style="font-weight:600;">' + c.cliente + (atr?' <span class="badge badge-atrasado">⚠️+'+horasAtraso(c)+'h</span>':'') + '</td>';
+    html += '<td style="font-weight:600;">' + (c.remetente||c.cliente||'—') + (atr?' <span class="badge badge-atrasado">⚠️+'+horasAtraso(c)+'h</span>':'') + '</td>';
     html += '<td>' + c.cidade + '</td><td style="text-align:center;">' + (c.volumes||'—') + '</td>';
     html += '<td>' + (c.peso?c.peso+' kg':'—') + '</td><td>' + badgeStatus(c.status) + '</td>';
     html += '<td style="font-family:var(--font-m);font-size:11px;font-weight:600;">' + (c.placa||'—') + '</td>';
@@ -703,9 +737,6 @@ function renderTabelaPainel() {
     html += '<td><span class="unidade-tag">' + c.unidade.split('—')[0].trim() + '</span></td>';
     html += '<td style="font-size:11px;color:var(--muted);">' + c.analista + '</td>';
     html += '<td style="font-size:11px;color:var(--muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + c.obs + '">' + (c.obs||'—') + '</td>';
-    const btnImprimir = c.status === 'Programada'
-      ? '<button class="btn btn-outline btn-sm" onclick="imprimirOrdem(' + c.rowIndex + ')" title="Imprimir Ordem de Coleta" style="color:var(--blue);border-color:rgba(88,166,255,0.4);">🖨️</button>'
-      : '';
     html += '<td style="min-width:180px;"><div style="display:flex;flex-wrap:wrap;gap:4px;align-items:center;">' + btnAvanco + btnImprimir + '<button class="btn btn-outline btn-sm" onclick="abrirModal(' + c.rowIndex + ')">✏️</button></div></td></tr>';
   });
   html += '</tbody></table>';
