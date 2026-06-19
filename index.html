@@ -82,7 +82,7 @@
     position:sticky; top:0; z-index:100; box-shadow:var(--shadow);
   }
   .logo { display:flex; align-items:center; gap:0; padding:8px 20px; border-right:1px solid var(--border); }
-  .logo-img { height:36px; object-fit:contain; filter:brightness(1.05); }
+  .logo-img { height:54px; object-fit:contain; filter:brightness(1.05); }
   .logo-divider { width:1px; height:24px; background:var(--border); margin:0 16px; }
   .logo-tag {
     background:var(--red-subtle); border:1px solid rgba(155,32,32,0.3);
@@ -243,12 +243,13 @@
       border-bottom: 3px solid #9B2020; padding-bottom: 16px; margin-bottom: 24px;
     }
     #ordem-impressao .oc-header-left { display: flex; align-items: center; gap: 20px; }
-    #ordem-impressao .oc-logo { height: 90px; width: auto; object-fit: contain; }
+    #ordem-impressao .oc-logo { height: 130px; width: auto; object-fit: contain; }
     #ordem-impressao .oc-empresa-info { display: flex; flex-direction: column; gap: 2px; }
     #ordem-impressao .oc-empresa-nome { font-size: 13px; color: #555; font-weight: 600; }
     #ordem-impressao .oc-titulo-wrap { text-align: right; }
-    #ordem-impressao .oc-titulo { font-size: 22px; font-weight: 800; color: #111; letter-spacing: -0.5px; }
-    #ordem-impressao .oc-numero { font-size: 15px; font-weight: 700; color: #9B2020; margin-top: 4px; }
+    #ordem-impressao .oc-titulo-linha { display: flex; align-items: baseline; justify-content: flex-end; gap: 14px; }
+    #ordem-impressao .oc-titulo { font-size: 26px; font-weight: 800; color: #111; letter-spacing: -0.5px; }
+    #ordem-impressao .oc-numero { font-size: 20px; font-weight: 700; color: #9B2020; }
 
     /* BLOCO DESTAQUE — Cliente e Remetente */
     #ordem-impressao .oc-destaque-wrap {
@@ -262,7 +263,7 @@
       font-size: 10px; text-transform: uppercase; color: #9B2020;
       font-weight: 800; letter-spacing: 0.5px; display: block; margin-bottom: 4px;
     }
-    #ordem-impressao .oc-destaque span { font-size: 17px; font-weight: 800; color: #111; }
+    #ordem-impressao .oc-destaque span { font-size: 22px; font-weight: 800; color: #111; }
 
     /* LINHA ENDEREÇO + CIDADE */
     #ordem-impressao .oc-endereco-wrap {
@@ -271,7 +272,7 @@
       padding: 10px 16px; margin-bottom: 20px; gap: 16px;
     }
     #ordem-impressao .oc-endereco-wrap .oc-end-left { flex: 1; }
-    #ordem-impressao .oc-endereco-wrap .oc-end-right { text-align: right; white-space: nowrap; }
+    #ordem-impressao .oc-endereco-wrap .oc-end-right { text-align: right; white-space: nowrap; min-width: 120px; }
     #ordem-impressao .oc-endereco-wrap label {
       font-size: 10px; text-transform: uppercase; color: #888;
       font-weight: 800; letter-spacing: 0.5px; display: block; margin-bottom: 3px;
@@ -885,7 +886,7 @@ function imprimirOrdem(rowIndex) {
   if (logoSrc) headerHtml += '<img src="' + logoSrc + '" class="oc-logo" />';
   headerHtml += '<div class="oc-empresa-info"><div class="oc-empresa-nome">Estrela do Vale Transportes</div></div>';
   headerHtml += '</div>';
-  headerHtml += '<div class="oc-titulo-wrap"><div class="oc-titulo">Ordem de Coleta</div><div class="oc-numero">' + c.id + '</div></div>';
+  headerHtml += '<div class="oc-titulo-wrap"><div class="oc-titulo-linha"><div class="oc-titulo">Ordem de Coleta</div><div class="oc-numero">' + c.id + '</div></div></div>';
   headerHtml += '</div>';
   document.getElementById('oc-header-wrap').innerHTML = headerHtml;
 
