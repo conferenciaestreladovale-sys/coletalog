@@ -147,7 +147,7 @@
   .kpi.or .kpi-value { color:var(--orange); }
 
   /* CARD */
-  .card { background:var(--surface); border:1px solid var(--border); border-radius:10px; margin-bottom:18px; box-shadow:var(--shadow); overflow:visible; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:10px; margin-bottom:18px; box-shadow:var(--shadow); overflow:hidden; }
   .card-header { padding:13px 20px; border-bottom:1px solid var(--border2); display:flex; align-items:center; justify-content:space-between; background:var(--surface2); }
   .card-title { font-family:var(--font-d); font-size:14px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:8px; }
   .card-title-bar { width:3px; height:14px; background:var(--red-bright); border-radius:2px; }
@@ -202,7 +202,7 @@
   .search-wrap { display:flex; align-items:center; gap:7px; background:var(--bg); border:1px solid var(--border); border-radius:7px; padding:6px 11px; flex:1; max-width:260px; }
   .search-wrap input { border:none; padding:0; font-size:12px; background:none; }
   .filter-sel { padding:7px 10px; border:1px solid var(--border); border-radius:7px; font-family:var(--font-b); font-size:12px; color:var(--text); background:var(--bg); outline:none; cursor:pointer; }
-  table { width:100%; min-width:900px; border-collapse:collapse; }
+  table { width:100%; border-collapse:collapse; }
   th { padding:9px 14px; text-align:left; font-size:10px; font-weight:600; color:var(--muted); letter-spacing:.5px; text-transform:uppercase; background:var(--surface2); border-bottom:1px solid var(--border); white-space:nowrap; }
   td { padding:10px 14px; border-bottom:1px solid var(--border2); font-size:12px; vertical-align:middle; }
   tr:last-child td { border-bottom:none; }
@@ -233,18 +233,65 @@
     body > *:not(#ordem-impressao) { display: none !important; }
     #ordem-impressao {
       display: block !important; position: fixed; inset: 0;
-      background: white; color: #111; padding: 40px;
-      font-family: Arial, sans-serif; font-size: 13px; z-index: 99999;
+      background: white; color: #111; padding: 36px 44px;
+      font-family: Arial, sans-serif; font-size: 14px; z-index: 99999;
     }
-    #ordem-impressao h1 { font-size: 20px; margin-bottom: 4px; }
-    #ordem-impressao .oc-header { border-bottom: 2px solid #9B2020; padding-bottom: 12px; margin-bottom: 20px; }
-    #ordem-impressao .oc-empresa { font-size: 11px; color: #555; }
-    #ordem-impressao .oc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; margin-bottom: 20px; }
-    #ordem-impressao .oc-field label { font-size: 10px; text-transform: uppercase; color: #888; font-weight: bold; display: block; margin-bottom: 2px; }
-    #ordem-impressao .oc-field span { font-size: 13px; color: #111; font-weight: 600; }
+
+    /* CABEÇALHO */
+    #ordem-impressao .oc-header {
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 3px solid #9B2020; padding-bottom: 16px; margin-bottom: 24px;
+    }
+    #ordem-impressao .oc-header-left { display: flex; align-items: center; gap: 20px; }
+    #ordem-impressao .oc-logo { height: 90px; width: auto; object-fit: contain; }
+    #ordem-impressao .oc-empresa-info { display: flex; flex-direction: column; gap: 2px; }
+    #ordem-impressao .oc-empresa-nome { font-size: 13px; color: #555; font-weight: 600; }
+    #ordem-impressao .oc-titulo-wrap { text-align: right; }
+    #ordem-impressao .oc-titulo { font-size: 22px; font-weight: 800; color: #111; letter-spacing: -0.5px; }
+    #ordem-impressao .oc-numero { font-size: 15px; font-weight: 700; color: #9B2020; margin-top: 4px; }
+
+    /* BLOCO DESTAQUE — Cliente e Remetente */
+    #ordem-impressao .oc-destaque-wrap {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;
+    }
+    #ordem-impressao .oc-destaque {
+      background: #f7f7f7; border: 1px solid #ddd; border-left: 4px solid #9B2020;
+      border-radius: 6px; padding: 12px 16px;
+    }
+    #ordem-impressao .oc-destaque label {
+      font-size: 10px; text-transform: uppercase; color: #9B2020;
+      font-weight: 800; letter-spacing: 0.5px; display: block; margin-bottom: 4px;
+    }
+    #ordem-impressao .oc-destaque span { font-size: 17px; font-weight: 800; color: #111; }
+
+    /* LINHA ENDEREÇO + CIDADE */
+    #ordem-impressao .oc-endereco-wrap {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      background: #f7f7f7; border: 1px solid #ddd; border-radius: 6px;
+      padding: 10px 16px; margin-bottom: 20px; gap: 16px;
+    }
+    #ordem-impressao .oc-endereco-wrap .oc-end-left { flex: 1; }
+    #ordem-impressao .oc-endereco-wrap .oc-end-right { text-align: right; white-space: nowrap; }
+    #ordem-impressao .oc-endereco-wrap label {
+      font-size: 10px; text-transform: uppercase; color: #888;
+      font-weight: 800; letter-spacing: 0.5px; display: block; margin-bottom: 3px;
+    }
+    #ordem-impressao .oc-endereco-wrap span { font-size: 15px; font-weight: 700; color: #111; }
+
+    /* GRADE DE CAMPOS */
+    #ordem-impressao .oc-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px 24px; margin-bottom: 20px; }
+    #ordem-impressao .oc-field label {
+      font-size: 10px; text-transform: uppercase; color: #888;
+      font-weight: 800; letter-spacing: 0.5px; display: block; margin-bottom: 3px;
+    }
+    #ordem-impressao .oc-field span { font-size: 15px; color: #111; font-weight: 700; }
     #ordem-impressao .oc-full { grid-column: 1 / -1; }
-    #ordem-impressao .oc-footer { border-top: 1px solid #ddd; padding-top: 12px; font-size: 11px; color: #888; display: flex; justify-content: space-between; }
-    #ordem-impressao .oc-id { font-size: 11px; color: #9B2020; font-weight: bold; }
+
+    /* RODAPÉ */
+    #ordem-impressao .oc-footer {
+      border-top: 1px solid #ddd; padding-top: 12px; font-size: 11px;
+      color: #888; display: flex; justify-content: space-between; margin-top: 8px;
+    }
   }
 
   /* EMPTY */
@@ -389,7 +436,7 @@
           <option value="Cancelada">Cancelada</option>
         </select>
       </div>
-      <div id="tabela-registro-wrap" style="overflow-x:auto;"><div class="loading"><div class="spinner"></div> Carregando...</div></div>
+      <div id="tabela-registro-wrap"><div class="loading"><div class="spinner"></div> Carregando...</div></div>
     </div>
   </div>
 
@@ -433,7 +480,7 @@
         </select>
         <button class="btn btn-outline btn-sm" onclick="exportarCSV()">⬇️ Exportar CSV</button>
       </div>
-      <div id="tabela-painel-wrap" style="overflow-x:auto;"><div class="loading"><div class="spinner"></div> Carregando...</div></div>
+      <div id="tabela-painel-wrap"><div class="loading"><div class="spinner"></div> Carregando...</div></div>
     </div>
   </div>
 </div>
@@ -831,28 +878,46 @@ function imprimirOrdem(rowIndex) {
   const c = coletas.find(function(x) { return x.rowIndex === rowIndex; });
   if (!c) return;
   const logoSrc = document.querySelector('.logo-img') ? document.querySelector('.logo-img').src : '';
+
+  // CABEÇALHO
+  var headerHtml = '<div class="oc-header">';
+  headerHtml += '<div class="oc-header-left">';
+  if (logoSrc) headerHtml += '<img src="' + logoSrc + '" class="oc-logo" />';
+  headerHtml += '<div class="oc-empresa-info"><div class="oc-empresa-nome">Estrela do Vale Transportes</div></div>';
+  headerHtml += '</div>';
+  headerHtml += '<div class="oc-titulo-wrap"><div class="oc-titulo">Ordem de Coleta</div><div class="oc-numero">' + c.id + '</div></div>';
+  headerHtml += '</div>';
+  document.getElementById('oc-header-wrap').innerHTML = headerHtml;
+
+  // CAMPOS EM DESTAQUE — Cliente e Remetente
+  var destaqueHtml = '<div class="oc-destaque-wrap">';
+  destaqueHtml += '<div class="oc-destaque"><label>Cliente / Solicitante</label><span>' + (c.cliente||'—') + '</span></div>';
+  destaqueHtml += '<div class="oc-destaque"><label>Remetente</label><span>' + (c.remetente||'—') + '</span></div>';
+  destaqueHtml += '</div>';
+
+  // ENDEREÇO + CIDADE NA MESMA LINHA
+  var enderecoHtml = '<div class="oc-endereco-wrap">';
+  enderecoHtml += '<div class="oc-end-left"><label>Endereço de Coleta</label><span>' + (c.endereco||'—') + '</span></div>';
+  enderecoHtml += '<div class="oc-end-right"><label>Cidade</label><span>' + (c.cidade||'—') + '</span></div>';
+  enderecoHtml += '</div>';
+
+  // GRADE DE CAMPOS
   function campo(label, valor, full) {
     return '<div class="oc-field' + (full?' oc-full':'') + '"><label>' + label + '</label><span>' + (valor||'—') + '</span></div>';
   }
-  var headerHtml = '<div class="oc-header">';
-  if (logoSrc) headerHtml += '<img src="' + logoSrc + '" style="height:60px;width:auto;object-fit:contain;margin-bottom:8px;" />';
-  headerHtml += '<h1>Ordem de Coleta</h1><div class="oc-empresa">Estrela do Vale Transportes</div></div>';
-  document.getElementById('oc-header-wrap').innerHTML = headerHtml;
-  document.getElementById('oc-conteudo').innerHTML =
-    campo('Nº da Ordem', c.id) +
+  var gradeHtml = '<div class="oc-grid">' +
     campo('Data do Registro', c.data) +
-    campo('Cliente / Solicitante', c.cliente) +
-    campo('Remetente', c.remetente) +
-    campo('Cidade', c.cidade) +
-    campo('Endereço de Coleta', c.endereco, true) +
+    campo('Placa do Veículo', c.placa) +
+    campo('Nº Documento (NF/CT-e)', c.docNum) +
     campo('Volumes', c.volumes) +
     campo('Peso Estimado', c.peso ? c.peso + ' kg' : '—') +
     campo('Status', c.status) +
-    campo('Placa do Veículo', c.placa) +
     campo('Unidade Responsável', c.unidade, true) +
     campo('Analista Responsável', c.analista) +
-    campo('Nº Documento (NF/CT-e)', c.docNum) +
-    (c.obs ? campo('Observações', c.obs, true) : '');
+    (c.obs ? campo('Observações', c.obs, true) : '') +
+    '</div>';
+
+  document.getElementById('oc-conteudo').innerHTML = destaqueHtml + enderecoHtml + gradeHtml;
   document.getElementById('oc-id-rodape').textContent = 'Ordem: ' + c.id;
   document.getElementById('oc-data-impressao').textContent = 'Impresso em: ' + new Date().toLocaleString('pt-BR');
   window.print();
