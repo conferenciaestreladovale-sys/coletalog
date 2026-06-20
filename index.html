@@ -233,65 +233,115 @@
     body > *:not(#ordem-impressao) { display: none !important; }
     #ordem-impressao {
       display: block !important; position: fixed; inset: 0;
-      background: white; color: #111; padding: 36px 44px;
-      font-family: Arial, sans-serif; font-size: 14px; z-index: 99999;
+      background: white; color: #111; padding: 28px 40px;
+      font-family: Arial, sans-serif; font-size: 13px; z-index: 99999;
     }
 
-    /* CABEÇALHO */
+    /* ── CABEÇALHO ── */
     #ordem-impressao .oc-header {
       display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 3px solid #9B2020; padding-bottom: 16px; margin-bottom: 24px;
+      padding-bottom: 14px; margin-bottom: 0;
+      border-bottom: 4px solid #9B2020;
     }
-    #ordem-impressao .oc-header-left { display: flex; align-items: center; gap: 20px; }
-    #ordem-impressao .oc-logo { height: 130px; width: auto; object-fit: contain; }
-    #ordem-impressao .oc-empresa-info { display: flex; flex-direction: column; gap: 2px; }
-    #ordem-impressao .oc-empresa-nome { font-size: 13px; color: #555; font-weight: 600; }
+    #ordem-impressao .oc-header-left {
+      display: flex; align-items: center; gap: 16px;
+    }
+    #ordem-impressao .oc-logo {
+      height: 64px; width: auto; object-fit: contain;
+    }
+    #ordem-impressao .oc-empresa-nome {
+      font-size: 12px; color: #666; font-weight: 600;
+    }
     #ordem-impressao .oc-titulo-wrap { text-align: right; }
-    #ordem-impressao .oc-titulo-linha { display: flex; align-items: baseline; justify-content: flex-end; gap: 14px; }
-    #ordem-impressao .oc-titulo { font-size: 26px; font-weight: 800; color: #111; letter-spacing: -0.5px; }
-    #ordem-impressao .oc-numero { font-size: 20px; font-weight: 700; color: #9B2020; }
+    #ordem-impressao .oc-titulo {
+      font-size: 30px; font-weight: 900; color: #111;
+      letter-spacing: -1px; text-transform: uppercase; line-height: 1;
+    }
+    #ordem-impressao .oc-numero {
+      font-size: 13px; font-weight: 700; color: #9B2020;
+      letter-spacing: 1px; margin-top: 4px;
+    }
 
-    /* BLOCO DESTAQUE — Cliente e Remetente */
-    #ordem-impressao .oc-destaque-wrap {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;
+    /* ── FAIXA ── */
+    #ordem-impressao .oc-faixa {
+      background: #9B2020; color: white;
+      padding: 5px 14px; font-size: 10px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px;
     }
-    #ordem-impressao .oc-destaque {
-      background: #f7f7f7; border: 1px solid #ddd; border-left: 4px solid #9B2020;
-      border-radius: 6px; padding: 12px 16px;
-    }
-    #ordem-impressao .oc-destaque label {
-      font-size: 10px; text-transform: uppercase; color: #9B2020;
-      font-weight: 800; letter-spacing: 0.5px; display: block; margin-bottom: 4px;
-    }
-    #ordem-impressao .oc-destaque span { font-size: 22px; font-weight: 800; color: #111; }
 
-    /* LINHA ENDEREÇO + CIDADE */
-    #ordem-impressao .oc-endereco-wrap {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      background: #f7f7f7; border: 1px solid #ddd; border-radius: 6px;
-      padding: 10px 16px; margin-bottom: 20px; gap: 16px;
+    /* ── LINHA 1: CLIENTE | REMETENTE ── */
+    #ordem-impressao .oc-linha-dupla {
+      display: grid; grid-template-columns: 1fr 1fr;
+      border: 1.5px solid #ccc; margin-bottom: 10px;
     }
-    #ordem-impressao .oc-endereco-wrap .oc-end-left { flex: 1; }
-    #ordem-impressao .oc-endereco-wrap .oc-end-right { text-align: right; white-space: nowrap; min-width: 120px; }
-    #ordem-impressao .oc-endereco-wrap label {
-      font-size: 10px; text-transform: uppercase; color: #888;
-      font-weight: 800; letter-spacing: 0.5px; display: block; margin-bottom: 3px;
+    #ordem-impressao .oc-celula {
+      padding: 14px 18px;
     }
-    #ordem-impressao .oc-endereco-wrap span { font-size: 15px; font-weight: 700; color: #111; }
+    #ordem-impressao .oc-celula + .oc-celula {
+      border-left: 1px solid #ccc;
+    }
+    #ordem-impressao .oc-celula label {
+      font-size: 9px; text-transform: uppercase; color: #9B2020;
+      font-weight: 800; letter-spacing: 1px; display: block; margin-bottom: 8px;
+    }
+    #ordem-impressao .oc-celula span {
+      font-size: 22px; font-weight: 800; color: #111; line-height: 1.1; display: block;
+    }
 
-    /* GRADE DE CAMPOS */
-    #ordem-impressao .oc-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px 24px; margin-bottom: 20px; }
-    #ordem-impressao .oc-field label {
-      font-size: 10px; text-transform: uppercase; color: #888;
-      font-weight: 800; letter-spacing: 0.5px; display: block; margin-bottom: 3px;
+    /* ── LINHA 2: ENDEREÇO | CIDADE ── */
+    #ordem-impressao .oc-linha-end {
+      display: grid; grid-template-columns: 2fr 1fr;
+      border: 1.5px solid #ccc; margin-bottom: 10px;
     }
-    #ordem-impressao .oc-field span { font-size: 15px; color: #111; font-weight: 700; }
-    #ordem-impressao .oc-full { grid-column: 1 / -1; }
+    #ordem-impressao .oc-linha-end .oc-celula label { color: #555; }
+    #ordem-impressao .oc-linha-end .oc-celula span { font-size: 15px; }
 
-    /* RODAPÉ */
+    /* ── LINHA 3: GRADE 4 CAMPOS ── */
+    #ordem-impressao .oc-linha-4 {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border: 1.5px solid #ccc; border-bottom: none; margin-bottom: 0;
+    }
+    /* ── LINHA 4: GRADE 3 CAMPOS ── */
+    #ordem-impressao .oc-linha-3 {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      border: 1.5px solid #ccc; border-top: none; margin-bottom: 10px;
+    }
+    #ordem-impressao .oc-linha-4 .oc-celula,
+    #ordem-impressao .oc-linha-3 .oc-celula {
+      border-top: 1px solid #ccc;
+    }
+    #ordem-impressao .oc-linha-4 .oc-celula + .oc-celula,
+    #ordem-impressao .oc-linha-3 .oc-celula + .oc-celula {
+      border-left: 1px solid #ccc;
+    }
+    #ordem-impressao .oc-linha-4 .oc-celula label,
+    #ordem-impressao .oc-linha-3 .oc-celula label { color: #555; }
+    #ordem-impressao .oc-linha-4 .oc-celula span,
+    #ordem-impressao .oc-linha-3 .oc-celula span { font-size: 15px; }
+
+    /* ── OBSERVAÇÕES ── */
+    #ordem-impressao .oc-linha-obs {
+      border: 1.5px solid #ccc; margin-bottom: 10px;
+    }
+    #ordem-impressao .oc-linha-obs .oc-celula label { color: #555; }
+    #ordem-impressao .oc-linha-obs .oc-celula span { font-size: 14px; }
+
+    /* ── ASSINATURAS ── */
+    #ordem-impressao .oc-assinaturas {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 28px; margin-top: 28px; margin-bottom: 20px;
+    }
+    #ordem-impressao .oc-assinatura-campo {
+      border-top: 1px solid #888; padding-top: 7px;
+      font-size: 10px; color: #666; text-align: center;
+    }
+
+    /* ── RODAPÉ ── */
     #ordem-impressao .oc-footer {
-      border-top: 1px solid #ddd; padding-top: 12px; font-size: 11px;
-      color: #888; display: flex; justify-content: space-between; margin-top: 8px;
+      border-top: 1px solid #ddd; padding-top: 10px; font-size: 10px;
+      color: #999; display: flex; justify-content: space-between;
     }
   }
 
@@ -880,45 +930,59 @@ function imprimirOrdem(rowIndex) {
   if (!c) return;
   const logoSrc = document.querySelector('.logo-img') ? document.querySelector('.logo-img').src : '';
 
-  // CABEÇALHO
-  var headerHtml = '<div class="oc-header">';
-  headerHtml += '<div class="oc-header-left">';
-  if (logoSrc) headerHtml += '<img src="' + logoSrc + '" class="oc-logo" />';
-  headerHtml += '<div class="oc-empresa-info"><div class="oc-empresa-nome">Estrela do Vale Transportes</div></div>';
-  headerHtml += '</div>';
-  headerHtml += '<div class="oc-titulo-wrap"><div class="oc-titulo-linha"><div class="oc-titulo">Ordem de Coleta</div><div class="oc-numero">' + c.id + '</div></div></div>';
-  headerHtml += '</div>';
-  document.getElementById('oc-header-wrap').innerHTML = headerHtml;
+  // ── CABEÇALHO
+  var html = '<div class="oc-header">';
+  html += '<div class="oc-header-left">';
+  if (logoSrc) html += '<img src="' + logoSrc + '" class="oc-logo" />';
+  html += '<div class="oc-empresa-nome">Estrela do Vale Transportes</div>';
+  html += '</div>';
+  html += '<div class="oc-titulo-wrap"><div class="oc-titulo">Ordem de Coleta</div><div class="oc-numero">' + c.id + '</div></div>';
+  html += '</div>';
 
-  // CAMPOS EM DESTAQUE — Cliente e Remetente
-  var destaqueHtml = '<div class="oc-destaque-wrap">';
-  destaqueHtml += '<div class="oc-destaque"><label>Cliente / Solicitante</label><span>' + (c.cliente||'—') + '</span></div>';
-  destaqueHtml += '<div class="oc-destaque"><label>Remetente</label><span>' + (c.remetente||'—') + '</span></div>';
-  destaqueHtml += '</div>';
+  // ── FAIXA
+  html += '<div class="oc-faixa"><span>Documento de Solicitação de Coleta</span><span>' + c.data + '</span></div>';
 
-  // ENDEREÇO + CIDADE NA MESMA LINHA
-  var enderecoHtml = '<div class="oc-endereco-wrap">';
-  enderecoHtml += '<div class="oc-end-left"><label>Endereço de Coleta</label><span>' + (c.endereco||'—') + '</span></div>';
-  enderecoHtml += '<div class="oc-end-right"><label>Cidade</label><span>' + (c.cidade||'—') + '</span></div>';
-  enderecoHtml += '</div>';
+  // ── LINHA 1: CLIENTE | REMETENTE
+  html += '<div class="oc-linha-dupla">';
+  html += '<div class="oc-celula"><label>Cliente / Solicitante</label><span>' + (c.cliente||'—') + '</span></div>';
+  html += '<div class="oc-celula"><label>Remetente (Local de Coleta)</label><span>' + (c.remetente||'—') + '</span></div>';
+  html += '</div>';
 
-  // GRADE DE CAMPOS
-  function campo(label, valor, full) {
-    return '<div class="oc-field' + (full?' oc-full':'') + '"><label>' + label + '</label><span>' + (valor||'—') + '</span></div>';
+  // ── LINHA 2: ENDEREÇO | CIDADE
+  html += '<div class="oc-linha-end">';
+  html += '<div class="oc-celula"><label>Endereço de Coleta</label><span>' + (c.endereco||'—') + '</span></div>';
+  html += '<div class="oc-celula"><label>Cidade</label><span>' + (c.cidade||'—') + '</span></div>';
+  html += '</div>';
+
+  // ── LINHA 3: DATA | PLACA | VOLUMES | PESO
+  html += '<div class="oc-linha-4">';
+  html += '<div class="oc-celula"><label>Data do Registro</label><span>' + (c.data||'—') + '</span></div>';
+  html += '<div class="oc-celula"><label>Placa do Veículo</label><span>' + (c.placa||'—') + '</span></div>';
+  html += '<div class="oc-celula"><label>Volumes</label><span>' + (c.volumes||'—') + '</span></div>';
+  html += '<div class="oc-celula"><label>Peso Estimado</label><span>' + (c.peso ? c.peso + ' kg' : '—') + '</span></div>';
+  html += '</div>';
+
+  // ── LINHA 4: NF | UNIDADE | ANALISTA
+  html += '<div class="oc-linha-3">';
+  html += '<div class="oc-celula"><label>Nº Documento (NF / CT-e)</label><span>' + (c.docNum||'—') + '</span></div>';
+  html += '<div class="oc-celula"><label>Unidade Responsável</label><span>' + (c.unidade||'—') + '</span></div>';
+  html += '<div class="oc-celula"><label>Analista Responsável</label><span>' + (c.analista||'—') + '</span></div>';
+  html += '</div>';
+
+  // ── OBSERVAÇÕES (se houver)
+  if (c.obs) {
+    html += '<div class="oc-linha-obs"><div class="oc-celula"><label>Observações</label><span>' + c.obs + '</span></div></div>';
   }
-  var gradeHtml = '<div class="oc-grid">' +
-    campo('Data do Registro', c.data) +
-    campo('Placa do Veículo', c.placa) +
-    campo('Nº Documento (NF/CT-e)', c.docNum) +
-    campo('Volumes', c.volumes) +
-    campo('Peso Estimado', c.peso ? c.peso + ' kg' : '—') +
-    campo('Status', c.status) +
-    campo('Unidade Responsável', c.unidade, true) +
-    campo('Analista Responsável', c.analista) +
-    (c.obs ? campo('Observações', c.obs, true) : '') +
-    '</div>';
 
-  document.getElementById('oc-conteudo').innerHTML = destaqueHtml + enderecoHtml + gradeHtml;
+  // ── ASSINATURAS
+  html += '<div class="oc-assinaturas">';
+  html += '<div class="oc-assinatura-campo">Responsável pela Coleta</div>';
+  html += '<div class="oc-assinatura-campo">Motorista</div>';
+  html += '<div class="oc-assinatura-campo">Remetente / Conferente</div>';
+  html += '</div>';
+
+  document.getElementById('oc-header-wrap').innerHTML = html;
+  document.getElementById('oc-conteudo').innerHTML = '';
   document.getElementById('oc-id-rodape').textContent = 'Ordem: ' + c.id;
   document.getElementById('oc-data-impressao').textContent = 'Impresso em: ' + new Date().toLocaleString('pt-BR');
   window.print();
